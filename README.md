@@ -1,6 +1,8 @@
-# office2Pdf
+# Office2PDF
 
 作者：evgo，公众号（随风前行），个人网站（evgo2017.com），Github（evgo2017）
+
+[exe 下载地址](<https://github.com/evgo2017/Office2PDF/releases> )
 
 ## 一、程序功能
 
@@ -47,7 +49,7 @@
 
 ### Office2PDF.exe
 
-下载地址：[Office2PDF.exe](<https://github.com/evgo2017/someTools/releases> )
+下载地址：[Office2PDF.exe](<https://github.com/evgo2017/Office2PDF/releases> )
 
 兼容性暂时无法测试，若出问题，可选择 `py` 文件或联系我。
 
@@ -57,11 +59,11 @@
 
 只是实现了基础功能，不够完善。有一定的对比学习意义。因为 `Java` 安装运行较为麻烦，分享不够便利，于是换成 `Python` 语言实现。
 
-## Test
+## 五、Test
 
 在 `test ` 文件夹内，是用于测试的各格式文档。
 
-## 最后
+## 六、最后
 
 若有更新信息，会在此文档进行说明。
 
