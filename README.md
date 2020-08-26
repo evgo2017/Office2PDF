@@ -1,8 +1,20 @@
 # Office2PDF
 
-作者：evgo，公众号（随风前行），个人网站（evgo2017.com），Github（evgo2017）
+作者：evgo（evgo2017.com）
 
 [exe 下载地址](<https://github.com/evgo2017/Office2PDF/releases> )
+
+## 待增加功能
+
+> 近期在完善，暂未更新 exe 文件
+
+- [x] 增加界面
+- [x] 手动选择文件夹，无需复制粘贴
+- [ ] 选择 word, excel, ppt 类型，默认全部
+- [ ] 支持子文件夹，默认转化
+    - [ ] 支持原文件夹结构或平铺
+
+![office2pdf_v2.0运行示例](assets/office2pdf_v2.0.PNG)
 
 ## 一、程序功能
 
@@ -69,6 +81,15 @@
 
 
 
-原先在自己 `SomeTools` 项目内，了解到 `release` 后就想着独立出来去发布 `exe` ，之前是与源码在一起的...
+原先在自己 `SomeTools` 项目内，了解到 `release` 后就想着独立出来去发布 `exe` ，之前是与源码在一起的。
 
 写出程序的同时写了一篇文章：[office 转 pdf 技巧及软件](<https://mp.weixin.qq.com/s?__biz=MzIwMjk2MTQ1MQ==&mid=2247484268&idx=1&sn=80bf791cae04e836b25525e3039fa3ff&chksm=96d7e428a1a06d3eb0ba59c98b5f772ca621792cda53abef70218d94ac1239d2c2fb71a8b539#rd> )，有兴趣可以读读。
+
+## 七、更新记录
+
+| 时间       | 内容                                                 | 备注 |
+| ---------- | ---------------------------------------------------- | ---- |
+| 2020.04.30 | 看尝试 c# 重新实现，并且写出界面。加入遍历子文件夹。 |      |
+|            |                                                      |      |
+|            |                                                      |      |
+
