@@ -9,11 +9,7 @@ import os, win32com.client, gc, tkinter as tk
 from tkinter import filedialog, IntVar, ttk
 from enum import Enum
 
-# TODO：配置
-class CONVERTTYPE(Enum):
-    WORD = 0
-    EXCEL = 1
-    PPT = 2
+# TODO：解决转化完成才开始写入，子线程更新 UI
 
 # 界面基础
 window = tk.Tk()
@@ -22,6 +18,10 @@ windowWidth = 600
 fromFolderEntry = None
 toFolderEntry = None
 logListText = None
+wordCheckVar = tk.IntVar()
+pptCheckVar= tk.IntVar()
+excelCheckVar = tk.IntVar()
+allTypeCheckVar = tk.IntVar()
 
 def chooseFolderPath():
     return tk.filedialog.askdirectory(initialdir=os.getcwd(), title="Select file")
@@ -41,6 +41,14 @@ def getFromFolderPath():
     return fromFolderEntry.get()
 def getToFolderPath():
     return toFolderEntry.get()
+def toggleSelectAllConvertType():
+    flag = allTypeCheckVar.get() == 1
+    wordCheckVar.set(flag)
+    pptCheckVar.set(flag)
+    excelCheckVar.set(flag)
+def setAllTypeCheckVar():
+    allTypeCheckVar.set(wordCheckVar.get() + pptCheckVar.get() + excelCheckVar.get() == 3)
+
 def insertLog(log):
     return logListText.insert(tk.END, log + "\n")
 # 修改后缀名
@@ -203,19 +211,21 @@ def startConvert():
 
     insertLog("====================开始转换====================")
 
-    # 新建 pdf 文件夹，所有生成的 PDF 文件都放在里面
     toFolderPath = getToFolderPath()
     if not os.path.exists(toFolderPath):
         os.makedirs(toFolderPath)
 
-    word2Pdf(fromFolderPath, toFolderPath, words)
-    excel2Pdf(fromFolderPath, toFolderPath, excels)
-    ppt2Pdf(fromFolderPath, toFolderPath, ppts)
+    if (wordCheckVar.get() == 1):
+      word2Pdf(fromFolderPath, toFolderPath, words)
+    if (pptCheckVar.get() == 1):
+      ppt2Pdf(fromFolderPath, toFolderPath, ppts)
+    if (excelCheckVar.get() == 1):
+      excel2Pdf(fromFolderPath, toFolderPath, excels)
 
     insertLog("====================转换结束====================")
 
 def initView():
-    global window, windowHeight, windowWidth, fromFolderEntry, toFolderEntry, CONVERTTYPE, logListText
+    global window, windowHeight, windowWidth, fromFolderEntry, toFolderEntry, logListText, wordCheckVar, pptCheckVar, excelCheckVar, allTypeCheckVar
     # window
     window.title("Office2PDF")
     screenwidth = window.winfo_screenwidth()
@@ -234,7 +244,7 @@ def initView():
 
     infoLabelFrame.pack(fill = tk.X, expand = tk.YES, pady = 4)
     folerLabelFrame.pack(fill = tk.X, expand = tk.YES, pady = 4, ipady = 4)
-    # configFrame.pack(fill = tk.X)
+    configFrame.pack(fill = tk.X)
     startFrame.pack(fill = tk.X, expand = tk.YES, pady = 4)
     logListFrame.pack(fill = tk.BOTH, expand = tk.YES, pady = 4)
 
@@ -281,27 +291,28 @@ def initView():
     toFolderEntry.pack(side = tk.LEFT, fill = tk.X, expand = tk.YES, padx = 6)
     toFolderButton.pack(side = tk.LEFT)
 
-    # TODO：设置相关
     # configFrame
-    choseLabelFrame2 = tk.LabelFrame(configFrame, text="转换类型")
-    choseLabelFrame2.pack(side = tk.LEFT)
+    convertTypeLabelFrame = tk.LabelFrame(configFrame, text="转换类型")
+    convertTypeLabelFrame.pack(side = tk.LEFT)
     choseLabelFrame = tk.LabelFrame(configFrame, text="子文件夹")
-    choseLabelFrame.pack(side = tk.LEFT)
+    # choseLabelFrame.pack(side = tk.LEFT)
     v = IntVar()
     FRUITS = [
         ('转化', 1),
         ('不转化', 2)
     ]
-    convertTypes = [
-        ('Word', 1),
-        ('Excel', 2),
-        ('PPT', 3)
-    ]
     for name, num in FRUITS:
         tk.Radiobutton(choseLabelFrame, text=name, variable=v, value=num).pack(side = tk.LEFT)
-    for name, num in convertTypes:
-        tk.Checkbutton(choseLabelFrame2, text=name).pack(side = tk.LEFT)
-    tk.Checkbutton(choseLabelFrame2, text="全选/全不选").pack(side = tk.LEFT)
+
+    wordCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text = 'Word', variable = wordCheckVar, command = setAllTypeCheckVar)
+    pptCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text = 'PPT', variable = pptCheckVar, command = setAllTypeCheckVar)
+    excelCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text = 'Excel', variable = excelCheckVar, command = setAllTypeCheckVar)
+    allTypeCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text="全选/全不选", variable = allTypeCheckVar, command = toggleSelectAllConvertType)
+
+    wordCheckbutton.pack(side = tk.LEFT)
+    pptCheckbutton.pack(side = tk.LEFT)
+    excelCheckbutton.pack(side = tk.LEFT)
+    allTypeCheckbutton.pack(side = tk.LEFT)
 
     # startFrame
     startButton = ttk.Button(startFrame, text = '开始', command = startConvert)
@@ -317,6 +328,10 @@ def init():
     initView()
     fromFolderEntry.insert(0, os.getcwd())
     toFolderEntry.insert(0, os.getcwd())
+    wordCheckVar.set(1)
+    pptCheckVar.set(1)
+    excelCheckVar.set(1)
+    allTypeCheckVar.set(1)
 
     # 开始程序
     insertLog("【程序功能】将目标路径下内所有的 ppt、excel、word 均生成一份对应的 PDF 文件，存在新生成的 pdf 文件夹中（需已经安装office，不包括子文件夹）")
