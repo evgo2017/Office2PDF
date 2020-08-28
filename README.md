@@ -10,11 +10,11 @@
 
 - [x] 增加界面
 - [x] 手动选择文件夹，无需复制粘贴
-- [ ] 选择 word, excel, ppt 类型，默认全部
-- [ ] 支持子文件夹，默认转化
-    - [ ] 支持原文件夹结构或平铺
+- [x] 选择 word, excel, ppt 类型，默认全部
+- [x] 支持子文件夹，默认转化
+    - [X] 支持原文件夹结构或平铺
 
-![office2pdf_v2.0运行示例](assets/office2pdf_v2.0.PNG)
+![office2pdf_v2.0运行示例](https://evgo-public.oss-cn-shanghai.aliyuncs.com/repo/office2pdf/office2pdf_v2.png)
 
 ## 一、程序功能
 

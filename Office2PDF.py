@@ -22,6 +22,7 @@ wordCheckVar = tk.IntVar()
 pptCheckVar= tk.IntVar()
 excelCheckVar = tk.IntVar()
 allTypeCheckVar = tk.IntVar()
+isCovertChildrenFolderVar = tk.IntVar()
 
 def chooseFolderPath():
     return tk.filedialog.askdirectory(initialdir=os.getcwd(), title="Select file")
@@ -37,9 +38,9 @@ def setToFolderPath():
         toFolderPath = os.path.normpath(folderPath)
         toFolderEntry.delete(0, tk.END)
         toFolderEntry.insert(0, toFolderPath)
-def getFromFolderPath():
+def getFromRootFolderPath():
     return fromFolderEntry.get()
-def getToFolderPath():
+def getToRootFolderPath():
     return toFolderEntry.get()
 def toggleSelectAllConvertType():
     flag = allTypeCheckVar.get() == 1
@@ -48,7 +49,8 @@ def toggleSelectAllConvertType():
     excelCheckVar.set(flag)
 def setAllTypeCheckVar():
     allTypeCheckVar.set(wordCheckVar.get() + pptCheckVar.get() + excelCheckVar.get() == 3)
-
+def formatPath(path):
+    return os.path.normpath(path)
 def insertLog(log):
     return logListText.insert(tk.END, log + "\n")
 # 修改后缀名
@@ -56,19 +58,21 @@ def changeSufix2Pdf(file):
     return file[:file.rfind('.')]+".pdf"
 # 添加工作簿序号
 def addWorksheetsOrder(file, i):
-    return file[:file.rfind('.')]+"_工作表"+str(i)+".pdf"
+    return file[:file.rfind('.')] + "_" + str(i) + file[file.rfind('.'):]
 # 转换地址
 def toFileJoin(filePath,file):
     return os.path.join(filePath, file[:file.rfind('.')]+".pdf")
 
 # Word
-def word2Pdf(fromFolderPath, toFolderPath, words):
+def word2Pdf(fromRootFolderPath, toRootFolderPath, words):
     # 如果没有文件则提示后直接退出
     if(len(words)<1):
         insertLog("\n【无 Word 文件】\n")
         return
     # 开始转换
     insertLog("\n【开始 Word -> PDF 转换】")
+    fromRootFolderPath = formatPath(fromRootFolderPath)
+    toRootFolderPath = formatPath(toRootFolderPath)
     try:
         insertLog("打开 Word 进程...")
         word = win32com.client.Dispatch("Word.Application")
@@ -77,18 +81,23 @@ def word2Pdf(fromFolderPath, toFolderPath, words):
         doc = None
         for i in range(len(words)):
             insertLog("\n" + str(i))
-            fileName = words[i] # 文件名称
-            fromFilePath = os.path.join(fromFolderPath, fileName) # 文件地址
-            toFileName = changeSufix2Pdf(fileName) # 生成的文件名称
-            toFilePath = toFileJoin(toFolderPath, toFileName) # 生成的文件地址
-            insertLog("转换："+ fileName +"文件中...")
-            insertLog("文件来源地址：" + fromFilePath)
-            insertLog("文件目标地址：" + toFilePath)
+            fromFilePath = formatPath(words[i])
+            fromFileName = os.path.basename(fromFilePath)
+            insertLog("转换："+ fromFileName +"文件中...")
+            insertLog("原始文件：" + fromFilePath)
+            subPath = fromFilePath[len(fromRootFolderPath) + 1 : len(fromFilePath) - len(fromFileName)]
+            toSubFolderPath = os.path.join(toRootFolderPath, subPath)
+            # 子文件夹创建
+            if not os.path.exists(toSubFolderPath):
+                os.makedirs(toSubFolderPath)
+            toFileName = changeSufix2Pdf(fromFileName)
+            toFilePath = os.path.join(toSubFolderPath, toFileName)
+            insertLog("生成文件：" + toFilePath)
             # 某文件出错不影响其他文件打印
             try:
                 doc = word.Documents.Open(fromFilePath)
                 doc.SaveAs(toFilePath, 17) # 生成的所有 PDF 都会在 PDF 文件夹中
-                insertLog("完成："+ toFileName)
+                insertLog("完成："+ fromFileName)
             except Exception as e:
                 insertLog(str(e))
             # 关闭 Word 进程
@@ -104,13 +113,15 @@ def word2Pdf(fromFolderPath, toFolderPath, words):
         gc.collect()
 
 # Excel
-def excel2Pdf(fromFolderPath, toFolderPath, excels):
+def excel2Pdf(fromRootFolderPath, toRootFolderPath, excels):
     # 如果没有文件则提示后直接退出
     if(len(excels)<1):
         insertLog("\n【无 Excel 文件】\n")
         return
     # 开始转换
     insertLog("\n【开始 Excel -> PDF 转换】")
+    fromRootFolderPath = formatPath(fromRootFolderPath)
+    toRootFolderPath = formatPath(toRootFolderPath)
     try:
         insertLog("打开 Excel 进程中...")
         excel = win32com.client.Dispatch("Excel.Application")
@@ -120,22 +131,33 @@ def excel2Pdf(fromFolderPath, toFolderPath, excels):
         ws = None
         for i in range(len(excels)):
             insertLog(str(i))
-            fileName = excels[i] # 文件名称
-            fromFilePath = os.path.join(fromFolderPath, fileName) # 文件地址
-            
-            insertLog("转换："+fileName+"文件中...")
+            fromFilePath = formatPath(excels[i])
+            fromFileName = os.path.basename(fromFilePath)
+            insertLog("转换：" + fromFileName + "文件中...")
+            insertLog("原始文件：" + fromFilePath)
+            subPath = fromFilePath[len(fromRootFolderPath) + 1 : len(fromFilePath) - len(fromFileName)]
+            toSubFolderPath = os.path.join(toRootFolderPath, subPath)
+            # 子文件夹创建
+            if not os.path.exists(toSubFolderPath):
+                os.makedirs(toSubFolderPath)
             # 某文件出错不影响其他文件打印
             try:
                 wb = excel.Workbooks.Open(fromFilePath)
-                for j in range(wb.Worksheets.Count): # 工作表数量，一个工作簿可能有多张工作表
-                    toFileName = addWorksheetsOrder(fileName, j+1) # 生成的文件名称
-                    toFilePath = toFileJoin(toFolderPath, toFileName) # 生成的文件地址
-                    
+                count = wb.Worksheets.Count
+                insertLog("此 Excel 一共有" + str(count) + "张表")
+                for j in range(count): # 工作表数量，一个工作簿可能有多张工作表
+                    insertLog("转换第" + str(j + 1) + "张表中...")
+                    if (count == 1):
+                        toFileName = changeSufix2Pdf(fromFileName) # 生成的文件名称
+                    else:
+                        toFileName = changeSufix2Pdf(addWorksheetsOrder(fromFileName, j + 1)) # 仅多张表时加序号
+                    toFilePath = os.path.join(toSubFolderPath, toFileName) # 生成的文件地址
+                    insertLog("生成文件：" + toFilePath)
                     ws = wb.Worksheets(j+1) # 若为[0]则打包后会提示越界
                     ws.ExportAsFixedFormat(0, toFilePath) # 每一张都需要打印
-                    insertLog("转换至："+toFileName+"文件完成")
             except Exception as e:
                 insertLog(str(e))
+            insertLog("转换：" + fromFileName + "文件完成")
         # 关闭 Excel 进程
         insertLog("所有 Excel 文件已打印完毕")
         insertLog("结束 Excel 进程中...\n")
@@ -150,13 +172,15 @@ def excel2Pdf(fromFolderPath, toFolderPath, excels):
         gc.collect()
 
 # PPT
-def ppt2Pdf(fromFolderPath, toFolderPath, ppts):
+def ppt2Pdf(fromRootFolderPath, toRootFolderPath, ppts):
     # 如果没有文件则提示后直接退出
     if(len(ppts)<1):
         insertLog("\n【无 PPT 文件】\n")
         return
     # 开始转换
     insertLog("\n【开始 PPT -> PDF 转换】")
+    fromRootFolderPath = formatPath(fromRootFolderPath)
+    toRootFolderPath = formatPath(toRootFolderPath)
     try:
         insertLog("打开 PowerPoint 进程中...")
         powerpoint = win32com.client.Dispatch("PowerPoint.Application")
@@ -165,12 +189,18 @@ def ppt2Pdf(fromFolderPath, toFolderPath, ppts):
 
         for i in range(len(ppts)):
             insertLog(str(i))
-            fileName = ppts[i] # 文件名称
-            fromFilePath = os.path.join(fromFolderPath, fileName) # 文件地址
-            toFileName = changeSufix2Pdf(fileName) # 生成的文件名称
-            toFilePath = toFileJoin(toFolderPath, toFileName) # 生成的文件地址
-
-            insertLog("转换：" + fileName + "文件中...")
+            fromFilePath = formatPath(ppts[i])
+            fromFileName = os.path.basename(fromFilePath)
+            insertLog("转换："+ fromFileName +"文件中...")
+            insertLog("原始文件：" + fromFilePath)
+            subPath = fromFilePath[len(fromRootFolderPath) + 1 : len(fromFilePath) - len(fromFileName)]
+            toSubFolderPath = os.path.join(toRootFolderPath, subPath)
+            # 子文件夹创建
+            if not os.path.exists(toSubFolderPath):
+                os.makedirs(toSubFolderPath)
+            toFileName = changeSufix2Pdf(fromFileName)
+            toFilePath = os.path.join(toSubFolderPath, toFileName) # 生成的文件地址
+            insertLog("生成文件：" + toFilePath)
             try:
                 ppt = powerpoint.Presentations.Open(fromFilePath, WithWindow=False)
                 if ppt.Slides.Count>0:
@@ -199,33 +229,35 @@ def startConvert():
     words = []
     ppts = []
     excels = []
-    
-    fromFolderPath = getFromFolderPath()
-    for fn in os.listdir(fromFolderPath):
-        if fn.endswith(('.doc', 'docx')):
-            words.append(fn)
-        if fn.endswith(('.ppt', 'pptx')):
-            ppts.append(fn)
-        if fn.endswith(('.xls', 'xlsx')):
-            excels.append(fn)
 
+    fromRootFolderPath = getFromRootFolderPath()
+    toRootFolderPath = getToRootFolderPath()
+
+    for folderPath, dirs, fileNames in os.walk(fromRootFolderPath):
+        for fileName in fileNames:
+            fromFilePath = formatPath(os.path.join(folderPath, fileName))
+            if fileName.endswith(('.doc', 'docx')):
+                words.append(fromFilePath)
+            elif fileName.endswith(('.ppt', 'pptx')):
+                ppts.append(fromFilePath)
+            elif fileName.endswith(('.xls', 'xlsx')):
+                excels.append(fromFilePath)
+        if isCovertChildrenFolderVar.get() == 0:
+            break
+        
     insertLog("====================开始转换====================")
 
-    toFolderPath = getToFolderPath()
-    if not os.path.exists(toFolderPath):
-        os.makedirs(toFolderPath)
-
     if (wordCheckVar.get() == 1):
-      word2Pdf(fromFolderPath, toFolderPath, words)
+      word2Pdf(fromRootFolderPath, toRootFolderPath, words)
     if (pptCheckVar.get() == 1):
-      ppt2Pdf(fromFolderPath, toFolderPath, ppts)
+      ppt2Pdf(fromRootFolderPath, toRootFolderPath, ppts)
     if (excelCheckVar.get() == 1):
-      excel2Pdf(fromFolderPath, toFolderPath, excels)
+      excel2Pdf(fromRootFolderPath, toRootFolderPath, excels)
 
     insertLog("====================转换结束====================")
 
 def initView():
-    global window, windowHeight, windowWidth, fromFolderEntry, toFolderEntry, logListText, wordCheckVar, pptCheckVar, excelCheckVar, allTypeCheckVar
+    global window, windowHeight, windowWidth, fromFolderEntry, toFolderEntry, logListText, wordCheckVar, pptCheckVar, excelCheckVar, allTypeCheckVar, isCovertChildrenFolderVar
     # window
     window.title("Office2PDF")
     screenwidth = window.winfo_screenwidth()
@@ -293,26 +325,24 @@ def initView():
 
     # configFrame
     convertTypeLabelFrame = tk.LabelFrame(configFrame, text="转换类型")
+    concertChildrenFolderLabelFrame = tk.LabelFrame(configFrame, text="子文件夹")
     convertTypeLabelFrame.pack(side = tk.LEFT)
-    choseLabelFrame = tk.LabelFrame(configFrame, text="子文件夹")
-    # choseLabelFrame.pack(side = tk.LEFT)
-    v = IntVar()
-    FRUITS = [
-        ('转化', 1),
-        ('不转化', 2)
-    ]
-    for name, num in FRUITS:
-        tk.Radiobutton(choseLabelFrame, text=name, variable=v, value=num).pack(side = tk.LEFT)
+    concertChildrenFolderLabelFrame.pack(side = tk.LEFT)
 
     wordCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text = 'Word', variable = wordCheckVar, command = setAllTypeCheckVar)
     pptCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text = 'PPT', variable = pptCheckVar, command = setAllTypeCheckVar)
     excelCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text = 'Excel', variable = excelCheckVar, command = setAllTypeCheckVar)
     allTypeCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text="全选/全不选", variable = allTypeCheckVar, command = toggleSelectAllConvertType)
 
+    yesConvertChildrenFolderRadiobutton = tk.Radiobutton(concertChildrenFolderLabelFrame, text = "转换", variable = isCovertChildrenFolderVar, value = 1)
+    noConvertChildrenFolderRadiobutton = tk.Radiobutton(concertChildrenFolderLabelFrame, text = "不转换", variable = isCovertChildrenFolderVar, value = 0)
+
     wordCheckbutton.pack(side = tk.LEFT)
     pptCheckbutton.pack(side = tk.LEFT)
     excelCheckbutton.pack(side = tk.LEFT)
     allTypeCheckbutton.pack(side = tk.LEFT)
+    yesConvertChildrenFolderRadiobutton.pack(side = tk.LEFT)
+    noConvertChildrenFolderRadiobutton.pack(side = tk.LEFT)
 
     # startFrame
     startButton = ttk.Button(startFrame, text = '开始', command = startConvert)
@@ -326,18 +356,19 @@ def init():
     global window
 
     initView()
-    fromFolderEntry.insert(0, os.getcwd())
-    toFolderEntry.insert(0, os.getcwd())
+    fromFolderEntry.insert(0, os.getcwd() + "\\test")
+    toFolderEntry.insert(0, os.getcwd() + "\\pdf")
     wordCheckVar.set(1)
     pptCheckVar.set(1)
     excelCheckVar.set(1)
     allTypeCheckVar.set(1)
+    isCovertChildrenFolderVar.set(1)
 
     # 开始程序
     insertLog("【程序功能】将目标路径下内所有的 ppt、excel、word 均生成一份对应的 PDF 文件，存在新生成的 pdf 文件夹中（需已经安装office，不包括子文件夹）")
     insertLog("【作者】：evgo，evgo2017.com，公众号（随风前行），Github（evgo2017）")
     insertLog("注意：若某 PPT 和 Excel 文件为空，则会出错跳过此文件。若转换 PPT 时间过长，请查看是否有报错窗口等待确认，暂时无法彻底解决 PPT 的窗口问题（为空错误已解决）。在关闭进程过程中，时间可能会较长，十秒左右，请耐心等待。")
-    
+
     # 进入消息循环
     window.mainloop()
 
