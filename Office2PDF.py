@@ -8,8 +8,10 @@
 import os, win32com.client, gc, tkinter as tk
 from tkinter import filedialog, IntVar, ttk
 from enum import Enum
-
-# TODO：解决转化完成才开始写入，子线程更新 UI
+import queue
+import time
+import sys
+import threading
 
 # 界面基础
 window = tk.Tk()
@@ -23,6 +25,7 @@ pptCheckVar= tk.IntVar()
 excelCheckVar = tk.IntVar()
 allTypeCheckVar = tk.IntVar()
 isCovertChildrenFolderVar = tk.IntVar()
+logQueue = queue.Queue()
 
 def chooseFolderPath():
     return tk.filedialog.askdirectory(initialdir=os.getcwd(), title="Select file")
@@ -52,7 +55,17 @@ def setAllTypeCheckVar():
 def formatPath(path):
     return os.path.normpath(path)
 def insertLog(log):
-    return logListText.insert(tk.END, log + "\n")
+    logQueue.put(log)
+def showLog():
+    while not logQueue.empty():
+        content = logQueue.get()
+        logListText.insert(tk.END, content + "\n")
+        logListText.yview_moveto(1)
+    window.after(100, showLog)
+def startConvert():
+    T = threading.Thread(target = convert)
+    T.daemon = True
+    T.start()
 # 修改后缀名
 def changeSufix2Pdf(file):
     return file[:file.rfind('.')]+".pdf"
@@ -223,7 +236,7 @@ def ppt2Pdf(fromRootFolderPath, toRootFolderPath, ppts):
         gc.collect()
 
 # 核心转换
-def startConvert():
+def convert():
     # TODO：是否遍历子目录
     # 将目标文件夹所有文件归类，转换时只打开一个进程
     words = []
@@ -244,7 +257,7 @@ def startConvert():
                 excels.append(fromFilePath)
         if isCovertChildrenFolderVar.get() == 0:
             break
-        
+
     insertLog("====================开始转换====================")
 
     if (wordCheckVar.get() == 1):
@@ -349,8 +362,12 @@ def initView():
     startButton.pack(side = tk.LEFT, fill = tk.X, expand = tk.YES, ipady = 1.5)
 
     # logListFrame
-    logListText = tk.Text(logListFrame, height = 100)
-    logListText.pack(fill = tk.Y, expand = tk.YES)
+    scrollBar = tk.Scrollbar(logListFrame)
+    logListText = tk.Text(logListFrame, height = 100, yscrollcommand = scrollBar.set)
+    scrollBar.config(command = logListText.yview)
+
+    scrollBar.pack(side = tk.RIGHT, fill = tk.Y)
+    logListText.pack(side = tk.LEFT, fill = tk.Y, expand = tk.YES)
 
 def init():
     global window
@@ -369,6 +386,8 @@ def init():
     insertLog("【作者】：evgo，evgo2017.com，公众号（随风前行），Github（evgo2017）")
     insertLog("注意：若某 PPT 和 Excel 文件为空，则会出错跳过此文件。若转换 PPT 时间过长，请查看是否有报错窗口等待确认，暂时无法彻底解决 PPT 的窗口问题（为空错误已解决）。在关闭进程过程中，时间可能会较长，十秒左右，请耐心等待。")
 
+    # 启动 after 方法
+    window.after(100, showLog)
     # 进入消息循环
     window.mainloop()
 
