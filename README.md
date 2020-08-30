@@ -10,7 +10,7 @@ Office（Word、Excel、PPT） 文件批量转为 PDF 文件。功能较完善�
 - [x] 支持选择**文件夹**，无需复制粘贴
 - [x] 支持选择**转换哪些格式**，默认全部格式
 - [x] 支持选择是否转换**子文件夹**：默认转化
-  - [ ] 支持原文件夹结构或平铺
+  - [x] 支持原文件夹结构或平铺
 
 ![office2pdf_v2.0运行示例](https://evgo-public.oss-cn-shanghai.aliyuncs.com/repo/office2pdf/office2pdf_v2.png)
 

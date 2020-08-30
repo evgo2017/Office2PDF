@@ -21,6 +21,7 @@ logQueue = queue.Queue()
 fromRootFolderPathVar = tk.StringVar()
 toRootFolderPathVar = tk.StringVar()
 isCovertChildrenFolderVar = tk.IntVar()
+isKeepFolderStructureVar = tk.IntVar()
 isCovertWordVar = tk.IntVar()
 isCovertPPTVar= tk.IntVar()
 isCovertExcelVar = tk.IntVar()
@@ -30,6 +31,7 @@ isCovertAllTypeVar = tk.IntVar()
 fromRootFolderPathVar.set(os.getcwd())
 toRootFolderPathVar.set(os.getcwd())
 isCovertWordVar.set(1)
+isKeepFolderStructureVar.set(1)
 isCovertPPTVar.set(1)
 isCovertExcelVar.set(1)
 isCovertAllTypeVar.set(1)
@@ -71,7 +73,10 @@ def word2Pdf(fromRootFolderPath, toRootFolderPath, words):
             fromFilePath = formatPath(words[i])
             fromFileName = os.path.basename(fromFilePath)
             insertLog("原始文件：" + fromFilePath)
-            subPath = fromFilePath[len(fromRootFolderPath) + 1 : len(fromFilePath) - len(fromFileName)]
+            if (isKeepFolderStructureVar.get() == 1):
+                subPath = fromFilePath[len(fromRootFolderPath) + 1 : len(fromFilePath) - len(fromFileName)]
+            else:
+                subPath = ""
             toSubFolderPath = os.path.join(toRootFolderPath, subPath)
             # 子文件夹创建
             if not os.path.exists(toSubFolderPath):
@@ -120,7 +125,10 @@ def excel2Pdf(fromRootFolderPath, toRootFolderPath, excels):
             fromFilePath = formatPath(excels[i])
             fromFileName = os.path.basename(fromFilePath)
             insertLog("原始文件：" + fromFilePath)
-            subPath = fromFilePath[len(fromRootFolderPath) + 1 : len(fromFilePath) - len(fromFileName)]
+            if (isKeepFolderStructureVar.get() == 1):
+                subPath = fromFilePath[len(fromRootFolderPath) + 1 : len(fromFilePath) - len(fromFileName)]
+            else:
+                subPath = ""
             toSubFolderPath = os.path.join(toRootFolderPath, subPath)
             # 子文件夹创建
             if not os.path.exists(toSubFolderPath):
@@ -177,7 +185,10 @@ def ppt2Pdf(fromRootFolderPath, toRootFolderPath, ppts):
             fromFilePath = formatPath(ppts[i])
             fromFileName = os.path.basename(fromFilePath)
             insertLog("原始文件：" + fromFilePath)
-            subPath = fromFilePath[len(fromRootFolderPath) + 1 : len(fromFilePath) - len(fromFileName)]
+            if (isKeepFolderStructureVar.get() == 1):
+                subPath = fromFilePath[len(fromRootFolderPath) + 1 : len(fromFilePath) - len(fromFileName)]
+            else:
+                subPath = ""
             toSubFolderPath = os.path.join(toRootFolderPath, subPath)
             # 子文件夹创建
             if not os.path.exists(toSubFolderPath):
@@ -239,7 +250,7 @@ def convert(fromRootFolderPath, toRootFolderPath):
     insertLog("====================转换结束====================")
 
 class GUI():
-    def __init__(self, window, windowHeight = 530, windowWidth = 500):
+    def __init__(self, window, windowHeight = 530, windowWidth = 520):
         self.window = window
         self.windowHeight = windowHeight
         self.windowWidth = windowWidth
@@ -329,17 +340,19 @@ class GUI():
 
         # configFrame
         convertTypeLabelFrame = tk.LabelFrame(configFrame, text="转换类型")
-        concertChildrenFolderLabelFrame = tk.LabelFrame(configFrame, text="子文件夹")
-        convertTypeLabelFrame.pack(side = tk.LEFT)
-        concertChildrenFolderLabelFrame.pack(side = tk.LEFT)
+        convertChildrenFolderLabelFrame = tk.LabelFrame(configFrame, text="子文件夹")
+        convertTypeLabelFrame.pack(side = tk.LEFT, padx = 1)
+        convertChildrenFolderLabelFrame.pack(side = tk.LEFT)
 
         wordCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text = 'Word', variable = isCovertWordVar, command = setAllTypeCheckVar)
         pptCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text = 'PPT', variable = isCovertPPTVar, command = setAllTypeCheckVar)
         excelCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text = 'Excel', variable = isCovertExcelVar, command = setAllTypeCheckVar)
         allTypeCheckbutton = tk.Checkbutton(convertTypeLabelFrame, text="全选/全不选", variable = isCovertAllTypeVar, command = self.toggleConvertAllType)
 
-        yesConvertChildrenFolderRadiobutton = tk.Radiobutton(concertChildrenFolderLabelFrame, text = "转换", variable = isCovertChildrenFolderVar, value = 1)
-        noConvertChildrenFolderRadiobutton = tk.Radiobutton(concertChildrenFolderLabelFrame, text = "不转换", variable = isCovertChildrenFolderVar, value = 0)
+        yesConvertChildrenFolderRadiobutton = tk.Radiobutton(convertChildrenFolderLabelFrame, text = "转换", variable = isCovertChildrenFolderVar, value = 1)
+        noConvertChildrenFolderRadiobutton = tk.Radiobutton(convertChildrenFolderLabelFrame, text = "不转换", variable = isCovertChildrenFolderVar, value = 0)
+        yesKeepFolderStructureRadiobutton = tk.Radiobutton(convertChildrenFolderLabelFrame, text = "结构", variable = isKeepFolderStructureVar, value = 1)
+        noKeepFolderStructureRadiobutton = tk.Radiobutton(convertChildrenFolderLabelFrame, text = "平铺", variable = isKeepFolderStructureVar, value = 0)
 
         wordCheckbutton.pack(side = tk.LEFT)
         pptCheckbutton.pack(side = tk.LEFT)
@@ -347,6 +360,9 @@ class GUI():
         allTypeCheckbutton.pack(side = tk.LEFT)
         yesConvertChildrenFolderRadiobutton.pack(side = tk.LEFT)
         noConvertChildrenFolderRadiobutton.pack(side = tk.LEFT)
+        ttk.Separator(convertChildrenFolderLabelFrame, orient = tk.VERTICAL).pack(side = tk.LEFT, fill = tk.Y, padx = 4, pady = 4)
+        yesKeepFolderStructureRadiobutton.pack(side = tk.LEFT)
+        noKeepFolderStructureRadiobutton.pack(side = tk.LEFT)
 
         # startFrame
         startButton = ttk.Button(startFrame, text = '开始', command = startConvert)
