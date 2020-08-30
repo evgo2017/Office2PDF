@@ -1,3 +1,8 @@
+/*
+ * 只是实现了基础功能，不够完善。有一定的对比学习意义。
+ * 因为 `Java` 安装运行较为麻烦，分享不够便利，于是换成 `Python` 语言实现。
+ */
+
 package test;
 import java.io.File;
 import com.jacob.activeX.ActiveXComponent;
