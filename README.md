@@ -10,7 +10,7 @@ Office（Word、Excel、PPT） 文件批量转为 PDF 文件。功能较完善�
 - [x] 支持选择**文件夹**，无需复制粘贴
 - [x] 支持选择**转换哪些格式**，默认全部格式
 - [x] 支持选择是否转换**子文件夹**：默认转化
-  - [x] 支持原文件夹结构或平铺
+  - [x] 支持结构或平铺：目标文件夹内文件可依照来源文件夹结构放置，也可全平铺无结构
 
 ![office2pdf_v2.0运行示例](https://evgo-public.oss-cn-shanghai.aliyuncs.com/repo/office2pdf/office2pdf_v2.png)
 
@@ -20,11 +20,11 @@ Office（Word、Excel、PPT） 文件批量转为 PDF 文件。功能较完善�
   - [x] 有内容
   - [x] 无内容
 - [x] Excle
-  - [x] 有内容 - 生成该内部工作表个数的 PDF 文件
-  - [x] 无内容 - 生成的 PDF 不可正确打开
+  - [x] 有内容：生成该内部工作表个数的 PDF 文件
+  - [x] 无内容：生成的 PDF 不可正确打开
 - [x] PPT
-  - [x] 有内容 -  多页
-  - [x] 无内容 - 提示错误跳过转换
+  - [x] 有内容：多页
+  - [x] 无内容：提示错误跳过转换
 - [x] 内存管理
   - [x] 每种格式转换只打开**一个**进程
   - [x] 转换完成后关闭进程，内存回收 **gc** 收集
@@ -45,9 +45,11 @@ Office（Word、Excel、PPT） 文件批量转为 PDF 文件。功能较完善�
 
 ### Office2PDF.exe
 
-下载地址：[Office2PDF.exe](<https://github.com/evgo2017/Office2PDF/releases> )
+下载地址：[Github Release](https://github.com/evgo2017/Office2PDF/releases)
 
-兼容性未过多测试，若不可使用可联系我或使用py 文件。
+> 1）兼容性未过多测试，若使用有问题可联系我或使用 py 文件。
+>
+> 2）v2 的 exe 不是单文件，需要解压压缩包（13.5MB），在里面打开 Office2PDF.exe 使用。原因是采用 pyinstaller 进行打包，设置了 -w（Windows 下去掉命令框）和 -F（打包为单文件），就会有 Windows Defender 报错和打开很慢的问题。
 
 ## 三、最后
 
