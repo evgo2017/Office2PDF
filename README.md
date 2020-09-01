@@ -4,12 +4,11 @@
 
 ### 1. 基本功能
 
-Office（Word、Excel、PPT） 文件批量转为 PDF 文件。功能较完善，自用满意。
-
+- [x] 将 Office（Word、Excel、PPT 批量转为 PDF 文件
+  - [x] 支持选择**类型**，默认全部类型
 - [x] 支持 GUI 界面
 - [x] 支持选择**文件夹**，无需复制粘贴
-- [x] 支持选择**转换哪些格式**，默认全部格式
-- [x] 支持选择是否转换**子文件夹**：默认转化
+- [x] 支持选择转换**子文件夹**：默认转化
   - [x] 支持结构或平铺：目标文件夹内文件可依照来源文件夹结构放置，也可全平铺无结构
 
 ![office2pdf_v2.0运行示例](https://evgo-public.oss-cn-shanghai.aliyuncs.com/repo/office2pdf/office2pdf_v2.png)
@@ -38,11 +37,6 @@ Office（Word、Excel、PPT） 文件批量转为 PDF 文件。功能较完善�
 
 ## 二、使用方式
 
-### Office2PDF.py
-
-- [x] 需 `Python3` 环境
-- [x] 已安装引入的包
-
 ### Office2PDF.exe
 
 下载地址：[Github Release](https://github.com/evgo2017/Office2PDF/releases)
@@ -50,6 +44,11 @@ Office（Word、Excel、PPT） 文件批量转为 PDF 文件。功能较完善�
 > 1）兼容性未过多测试，若使用有问题可联系我或使用 py 文件。
 >
 > 2）v2 的 exe 不是单文件，需要解压压缩包（13.5MB），在里面打开 Office2PDF.exe 使用。原因是采用 pyinstaller 进行打包，设置了 -w（Windows 下去掉命令框）和 -F（打包为单文件），就会有 Windows Defender 报错和打开很慢的问题。
+
+### Office2PDF.py
+
+- [x] 需 `Python3` 环境
+- [x] 已安装引入的包
 
 ## 三、最后
 

@@ -1,9 +1,7 @@
 """
-【程序功能】：将文件夹内所有的 ppt、excel、word 均生成一份对应的 PDF 文件
+【程序功能】：将 Office（Word、Excel、PPT 批量转为 PDF 文件，支持 GUI 和子文件夹等功能。
 【作者】：evgo（evgo2017.com）
-【目标文件夹】：默认为此程序目前所在的文件夹；
-                若输入路径，则为该文件夹（只转换该层，不转换子文件夹下内容）
-【生成的pdf名称】：原始名称+.pdf
+【生成的 pdf 名称】：原始名称+.pdf
 """
 import os
 import win32com.client
