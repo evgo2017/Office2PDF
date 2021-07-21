@@ -12,6 +12,9 @@ import queue
 import time
 import sys
 import threading
+import pythoncom
+
+pythoncom.CoInitialize()
 
 window = tk.Tk()
 logQueue = queue.Queue()
