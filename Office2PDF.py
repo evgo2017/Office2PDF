@@ -90,6 +90,7 @@ def word2Pdf(fromRootFolderPath, toRootFolderPath, words):
             # 某文件出错不影响其他文件打印
             try:
                 doc = word.Documents.Open(fromFilePath)
+                # doc.ActiveWindow.View.ShowRevisionsAndComments = False
                 doc.SaveAs(toFilePath, 17) # 生成的所有 PDF 都会在 PDF 文件夹中
                 insertLog("生成文件：" + toFilePath)
             except Exception as e:
