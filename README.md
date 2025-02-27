@@ -36,15 +36,10 @@
 
 ### 2. 转换细节
 
-- [x] Word
-  - [x] 有内容
-  - [x] 无内容
-- [x] Excle
-  - [x] 有内容：生成该内部工作表个数的 PDF 文件
-  - [x] 无内容：生成的 PDF 不可正确打开
-- [x] PPT
-  - [x] 有内容：多页
-  - [x] 无内容：提示错误跳过转换
+|            | Word | Excel                                | PPT               |
+| ---------- | ---- | ------------------------------------ | ----------------- |
+| 文档有内容 | ✅    | ✅（若有多个 Sheet，则生成多个文件）  | ✅（多页）         |
+| 文档无内容 | ✅    | ❌（会跳过，不会产生对应的 PDF 文件） | ❌提示错误跳过转换 |
 
 ### 3. 运行要求
 
@@ -57,7 +52,7 @@
 
 若有更新信息，会在此文档进行说明。
 
-如果有问题可以在 [Issues](https://github.com/evgo2017/Office2PDF/issues) 留言，或者[联系我](https://evgo2017.com/link)。
+如果有问题可以在 [Issues](https://github.com/evgo2017/Office2PDF/issues)  留言，或者[联系我](https://evgo2017.com/about)。
 
 写出第一版程序的同时写了一篇文章：[office 转 pdf 技巧及软件](<https://mp.weixin.qq.com/s?__biz=MzIwMjk2MTQ1MQ==&mid=2247484268&idx=1&sn=80bf791cae04e836b25525e3039fa3ff&chksm=96d7e428a1a06d3eb0ba59c98b5f772ca621792cda53abef70218d94ac1239d2c2fb71a8b539#rd> )，有兴趣可以读读。
 

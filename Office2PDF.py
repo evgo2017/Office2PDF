@@ -55,6 +55,9 @@ def addWorksheetsOrder(file, i):
 
 # Word
 def word2Pdf(fromRootFolderPath, toRootFolderPath, words):
+    # 在每个转换函数中初始化 COM
+    pythoncom.CoInitialize()
+    
     # 如果没有文件则提示后直接退出
     if(len(words)<1):
         insertLog("\n【无 Word 文件】\n")
@@ -106,6 +109,9 @@ def word2Pdf(fromRootFolderPath, toRootFolderPath, words):
 
 # Excel
 def excel2Pdf(fromRootFolderPath, toRootFolderPath, excels):
+    # 在每个转换函数中初始化 COM
+    pythoncom.CoInitialize()
+    
     # 如果没有文件则提示后直接退出
     if(len(excels)<1):
         insertLog("\n【无 Excel 文件】\n")
@@ -167,6 +173,9 @@ def excel2Pdf(fromRootFolderPath, toRootFolderPath, excels):
 
 # PPT
 def ppt2Pdf(fromRootFolderPath, toRootFolderPath, ppts):
+    # 在每个转换函数中初始化 COM
+    pythoncom.CoInitialize()
+    
     # 如果没有文件则提示后直接退出
     if(len(ppts)<1):
         insertLog("\n【无 PPT 文件】\n")
@@ -221,6 +230,9 @@ def ppt2Pdf(fromRootFolderPath, toRootFolderPath, ppts):
 
 # 核心转换
 def convert(fromRootFolderPath, toRootFolderPath):
+    # 在新线程中初始化 COM
+    pythoncom.CoInitialize()
+    
     # TODO：是否遍历子目录
     # 将目标文件夹所有文件归类，转换时只打开一个进程
     words = []
