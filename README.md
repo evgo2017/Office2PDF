@@ -55,6 +55,6 @@
 
 | 时间       | 内容                                                         | 相关文章 |
 | ---------- | ------------------------------------------------------------ | ---- |
-| 2020.08.26 | v2，加入 GUI，支持选择类型、子文件夹等功能                   | [Office2PDF 批量转 PDF（第二版）](ttps://mp.weixin.qq.com/s/VxHxvUUqK2tn0PKNQkXTsQ)     |
+| 2020.08.26 | v2，加入 GUI，支持选择类型、子文件夹等功能                   | [Office2PDF 批量转 PDF（第二版）](https://mp.weixin.qq.com/s/VxHxvUUqK2tn0PKNQkXTsQ)     |
 | 2019.05.13 | 将此项目从自己的 `SomeTools` 项目独立出来，通过 `release` 发布 `exe` |      |
 | 2018.11.02 | v1，功能基本实现                                             | [office 转 pdf 技巧及软件](https://mp.weixin.qq.com/s/jZvVXgqcMOIxkKVzJXYEZA)      |
