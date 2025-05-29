@@ -2,7 +2,7 @@
 
 ![office2pdf_v2.0](https://github.com/evgo2017/Office2PDF/raw/master/assets/office2pdf_v2.png)
 
-更新信息、更多信息在[软件主页](https://evgo2017.com/blog/office2pdf)查看。
+已开源 [Office2PDF v3.0 新版本](https://github.com/evgo2017/Office2PDF-dotnet)。其它更新、更多信息在[软件主页](https://evgo2017.com/blog/office2pdf)查看。
 
 ## 一、下载使用
 
@@ -40,7 +40,8 @@
 
 | 时间       | 内容                                                         | 相关文章                                                     |
 | ---------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 2025.01.13 | v3，使用 .net 重构                                           | [Office2PDF：Office 批量转为 PDF（v3.0）](https://mp.weixin.qq.com/s/ZKoeyOjXNUtyG8c7GyQc3A) |
+| 2025.05.29 | v3，开源                                           | [开源地址](https://github.com/evgo2017/Office2PDF-dotnet) |
+| 2025.03.31 | v3，使用 .net 重构 后发布                                           | [Office2PDF：Office 批量转为 PDF（v3.0）](https://mp.weixin.qq.com/s/ZKoeyOjXNUtyG8c7GyQc3A) |
 | 2020.08.26 | v2，加入 GUI，支持选择类型、子文件夹等功能                   | [Office2PDF 批量转 PDF（第二版）](https://mp.weixin.qq.com/s/VxHxvUUqK2tn0PKNQkXTsQ) |
 | 2019.05.13 | 将此项目从自己的 `SomeTools` 项目独立出来，通过 `release` 发布 `exe` |                                                              |
 | 2018.11.02 | v1，功能基本实现                                             | [office 转 pdf 技巧及软件](https://mp.weixin.qq.com/s/jZvVXgqcMOIxkKVzJXYEZA) |
